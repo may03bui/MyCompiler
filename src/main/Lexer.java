@@ -2,12 +2,13 @@ package main;
 
 import java.util.*;
 
+// Edge case: 4 + - cos, for example (is this in the language? Maybe not.)
+
 public class Lexer {
 
-    private static final ArrayList<Character> digits =   // Definitely a better way to do this
+    // Definitely a better way to do this, brush up on streams
+    private static final ArrayList<Character> digits =
             new ArrayList<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
-    private static final ArrayList<Character> operations =  // One-char operations; all but 'cos'
-            new ArrayList<>(Arrays.asList('+', '-', '^', '!'));
 
     private static class NumberMatch {
         int nextLexemeStart;
@@ -30,7 +31,7 @@ public class Lexer {
 
     private static String runNumberDFA(String input, int start) throws Lexception {
         int pointer = start;
-        List<Integer> validStates = new ArrayList<>(Arrays.asList(4, 5, 8));
+        List<Integer> validStates = new ArrayList<>(Arrays.asList(1, 4, 5, 8));
         StringBuilder valString = new StringBuilder();
         int state = 0;
 
@@ -56,7 +57,7 @@ public class Lexer {
                     } else if (c == 'e') {
                         state = 6;
                     } else {
-                        throw new Lexception();
+                        return valString.toString();
                     }
                     break;
 
@@ -99,7 +100,9 @@ public class Lexer {
                 case 6:
                     if (c == '+' || c == '-') {
                         state = 7;
-                    } else if (c != '0' && digits.contains(c)) {
+                    } else if (c == '0') {
+                        state = 9;  // Hate to break the ordered number convention
+                    } else if (digits.contains(c)) {
                         state = 8;
                     } else {
                         throw new Lexception();
@@ -118,6 +121,10 @@ public class Lexer {
                     if (!digits.contains(c)) {
                         return valString.toString();
                     }
+                    break;
+
+                case 9:
+                    return valString.toString();
             }
 
             valString.append(input.charAt(pointer++));
@@ -173,6 +180,12 @@ public class Lexer {
                 } else {
                     throw new Lexception();
                 }
+
+            } else if (c == ' ') {
+            // Whitespace is technically not in the alphabet, but I thought it'd be a nice touch
+                pointer++;
+            } else {
+                throw new Lexception();
             }
         }
 
