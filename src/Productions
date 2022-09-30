@@ -1,0 +1,37 @@
+Q1 - productions for signed floating point numbers
+number -> pole integer fraction exponent        // The entire number component
+pole -> + | - | ε
+integer -> nzdigit digits | 0
+fraction -> .digit digits | ε                     // Need at least one digit after .
+exponent -> e pole integer | ε
+digits -> digit digits | ε
+nzdigit -> 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+digit -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+I *think* this is a regular grammar.
+
+
+
+Q2 - expressions
+expr -> expr + term | expr - term | term
+term -> term ^ factor | factor
+factor -> cos figure | figure
+figure -> number! | number
+
+
+
+Q3 - putting it all together:
+expr -> expr + term | expr - term | term
+term -> term ^ factor | factor
+factor -> cos figure | figure
+figure -> number! | number
+number -> pole integer fraction exponent
+pole -> + | - | ε
+integer -> nzdigit digits | 0
+fraction -> .digit digits | ε
+exponent -> e pole integer | ε
+digits -> digit digits | ε
+nzdigit -> 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+digit -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+The only terminals are pole, nzdigit and digit. The start symbol is expr, the top production.
