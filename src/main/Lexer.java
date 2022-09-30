@@ -1,9 +1,6 @@
 package main;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Queue;
+import java.util.*;
 
 public class Lexer {
 
@@ -33,6 +30,7 @@ public class Lexer {
 
     private static String runNumberDFA(String input, int start) throws Lexception {
         int pointer = start;
+        List<Integer> validStates = new ArrayList<>(Arrays.asList(4, 5, 8));
         StringBuilder valString = new StringBuilder();
         int state = 0;
 
@@ -125,6 +123,10 @@ public class Lexer {
             valString.append(input.charAt(pointer++));
         }
 
+        if (validStates.contains(state)) {
+            return valString.toString();
+        }
+
         throw new Lexception();
     }
 
@@ -133,8 +135,8 @@ public class Lexer {
         int pointer = 0;
 
         /* So that we can handle '+' and '-' symbols, we have a variable that we toggle each time we
-           encounter those symbols. We begin by expecting a number when we encounter a '+' or '-';
-           next time, we expect an op, etc.
+           encounter those symbols or a number. We begin by expecting a number when we encounter a '+'
+           or '-'; next time, we expect an op, etc.
            (This does, however, mean we are technically doing some parsing in the lexer...)       */
         boolean expectOp  = false;
 
@@ -150,13 +152,14 @@ public class Lexer {
                     tokens.add(match.token);
                     pointer = match.nextLexemeStart;
                 }
+
                 expectOp = !expectOp;  // Can reduce keystrokes by using ^= ...
 
             } else if (digits.contains(c)) {
-                System.out.println("D"); // TODO: remove
                 NumberMatch match = matchNumber(input, pointer);
                 tokens.add(match.token);
                 pointer = match.nextLexemeStart;
+                expectOp = !expectOp;
 
             } else if (c == '^' || c == '!') {
                 tokens.add(new Token(Character.toString(c)));
