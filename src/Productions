@@ -2,7 +2,7 @@ Q1 - productions for signed floating point numbers
 number -> pole integer fraction exponent        // The entire number component
 pole -> + | - | ε
 integer -> nzdigit digits | 0
-fraction -> .digit digits | ε                     // Need at least one digit after .
+fraction -> .digit digits | ε                   // Need at least one digit after .
 exponent -> e pole integer | ε
 digits -> digit digits | ε
 nzdigit -> 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
@@ -25,13 +25,16 @@ expr -> expr + term | expr - term | term
 term -> term ^ factor | factor
 factor -> cos figure | figure
 figure -> number! | number
-number -> pole integer fraction exponent
-pole -> + | - | ε
-integer -> nzdigit digits | 0
-fraction -> .digit digits | ε
-exponent -> e pole integer | ε
-digits -> digit digits | ε
-nzdigit -> 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-digit -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+(where 'number' is treated as a terminal)
 
-The only terminals are pole, nzdigit and digit. The start symbol is expr, the top production.
+The terminals are number, +, -, ^, ! and cos.
+The start symbol is expr, the top production.
+
+
+Let us now eliminate immediate left recursion for the top two productions.
+expr -> term expr'
+expr' -> + term expr' | - term expr' | ε
+term -> factor term'
+term' -> ^ factor term' | ε
+factor -> cos figure | figure
+figure -> number! | number
