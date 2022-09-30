@@ -1,0 +1,15 @@
+A DFA* describing the language of numbers accepted by the calculator.
+This is implemented in the static method 'Lexer.runMethodDFA'.
+
+"Accepted input numbers are to be signed floating point numbers:
+- An optional + or - character followed by…
+- A non-empty sequence of 0,1..9 characters, optionally interspersed (including at the beginning and
+  end) with (exactly) one decimal point, but no leading zeros except for “0. …”
+- Optionally followed by an exponent suffix, which consists of a single letter ‘e’, a single optional + or -
+  character, and a decimal integer without leading zeros." (jkf21, Churchill Col)
+
+* Technically an NFA. For the sake of readability, I have opted not to add an explicit 'reject' state.
+  Assume instead that transitioning from any state where there is not an arc for the symbol is equivalent
+  to transitioning to a 'reject' state from which you cannot return. For example, once you have entered
+  state 9, any further input symbol will result in a rejection. (This isn't quite reflected in the
+  implementation - as soon as we reach state 9, we just denote the end of the token value and move on.)
